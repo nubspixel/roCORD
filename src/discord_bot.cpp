@@ -14,21 +14,16 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
-#ifdef TESTING
-#include "showmsg_testing.hpp"
-#else
-#include "../../common/showmsg.hpp"
-#include "../../common/timer.hpp"
-#endif
-
 using namespace nlohmann;
 
 std::unique_ptr<rocord::core> dcore;
+std::shared_ptr<rocord::log> logger;
 
 #ifdef TESTING
 void discord_handle()
 {
   dcore->handle_events();
+  // handle logs
 }
 #else
 /*
@@ -37,6 +32,7 @@ void discord_handle()
 TIMER_FUNC(discord_handle)
 {
   dcore->handle_events();
+  // handle logs
   //add_timer(gettick() + 100, discord_handle, 0, 0);
   return 0;
 }
@@ -89,7 +85,9 @@ void discord_announce_drop(const char *msg)
  */
 int discord_init()
 {
-  ShowStatus("Loading roCORD by norm\n");
+  logger = std::shared_ptr<rocord::log>(new rocord::log());
+  //ShowStatus("Loading roCORD by norm\n");
+  logger->welcome();
 #ifdef TESTING
   std::ifstream ifs("../config/config.json"); // TODO: fix hardcoded path!
 #else
@@ -101,7 +99,8 @@ int discord_init()
       channel_mapping;
   std::string display_name, token, presence;
   if (ifs.fail()) {
-    ShowError("[roCORD] Failed to open config.json!\n");
+    //ShowError("[roCORD] Failed to open config.json!\n");
+    logger->print("Failed to open config.json!", rocord::log_type::ERROR);
     return -1;
   }
 
@@ -110,21 +109,26 @@ int discord_init()
     if (data.find("token") != data.end())
       token = data.at("token");
     else {
-      ShowError("[roCORD] Token is not defined! Aborting!\n");
+      //ShowError("[roCORD] Token is not defined! Aborting!\n");
+      logger->print("Token is not defined! Aborting!", rocord::log_type::ERROR);
       return -1;
     }
 
     if (data.find("display_name") != data.end())
       display_name = data.at("display_name");
     else {
-      ShowInfo("[roCORD] No display_name defined using alternative!\n");
+      //ShowInfo("[roCORD] No display_name defined using alternative!\n");
+      logger->print("No display_name defined using alternative!",
+                    rocord::log_type::WARNING);
       display_name = "roCORD";
     }
 
     if (data.find("presence") != data.end())
       presence = data.at("presence");
     else {
-      ShowInfo("[roCORD] No presence defined using alternative!\n");
+      //ShowInfo("[roCORD] No presence defined using alternative!\n");
+      logger->print("No presence defined using alternative!",
+                    rocord::log_type::WARNING);
       presence = "by Normynator";
     }
 
@@ -143,7 +147,9 @@ int discord_init()
     }
 
     if (channel_mapping->empty()) {
-      ShowError("[roCORD] No channel mapping found! Aborting!\n");
+      //ShowError("[roCORD] No channel mapping found! Aborting!\n");
+      logger->print("No channel mapping found! Aborting!", 
+                    rocord::log_type::ERROR);
       return -1;
     }
   }
@@ -151,11 +157,11 @@ int discord_init()
     std::cerr << e.what() << std::endl;
     return -1;
   }
-
+  std::shared_ptr<rocord::log> logger(new rocord::log());
   std::unique_ptr<rocord::websocket> dwss(new rocord::websocket(
-      token, "wss://gateway.discord.gg/?v=6&encoding=json")); // TODO use
+      token, "wss://gateway.discord.gg/?v=6&encoding=json", logger)); // TODO use
                                                               // factory pattern
-  std::unique_ptr<rocord::http> dhttps(new rocord::http(token));
+  std::unique_ptr<rocord::http> dhttps(new rocord::http(token, logger));
 
   /* TODO:
    *  Validate channel mapping !
@@ -165,7 +171,7 @@ int discord_init()
    */
   dcore = std::unique_ptr<rocord::core>(
       new rocord::core(display_name, token, presence, debug, channel_mapping,
-                       std::move(dwss), std::move(dhttps)));
+                       std::move(dwss), std::move(dhttps), logger));
 #ifndef TESTING
   add_timer_func_list(discord_handle, "discord_handle");
   add_timer_interval(gettick() + 100, discord_handle, 0, 0,
