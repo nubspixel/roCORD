@@ -3,13 +3,11 @@ cmake_minimum_required (VERSION 3.6)
 
 set (CMAKE_CXX_STANDARD 11)  # enable C++11 standard
 
-#if (NOT (DEFINED JSON AND DEFINED WEBSOCKETPP) AND NOT DEFINED TRAVIS)
-#	message (FATAL_ERROR "You did not provide JSON or WEBSOCKETPP Path")
-#endif()
 set (CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++1y -Wall")
 if (DEFINED TRAVIS OR DEFINED STAND_ALONE)
 	project (roCORD)
-  set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/third_party/CMake/Modules/")
+  set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} 
+                        "${CMAKE_SOURCE_DIR}/third_party/CMake/Modules/")
 	set (CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D TESTING")
 	set (roCORD_src src/main.cpp src/clif_testing.cpp src/showmsg_testing.cpp 
        src/discord_bot.cpp src/discord_core.cpp src/discord_error.cpp 
@@ -42,14 +40,8 @@ if (DEFINED TRAVIS OR DEFINED STAND_ALONE)
                 EXCLUDE_FROM_ALL)
   endif ()
 
-  #if (DEFINED STAND_ALONE)
-		message (STATUS "Using stand_alone setup!")
-    include_directories(${CMAKE_SOURCE_DIR}/third_party)
-    #else ()
-    #	message (STATUS "Using travis setup!")
-    #include_directories(cget/cget/pkg/nlohmann__json/install/include/ 
-    #  websocketpp/)
-                      #	endif ()
+  message (STATUS "Using stand_alone setup!")
+  include_directories(${CMAKE_SOURCE_DIR}/third_party)
 
 else () #RELEASE
 
@@ -57,7 +49,7 @@ else () #RELEASE
 	message (STATUS "Using release setup!")
 	set(roCORD_src discord_bot.cpp discord_core.cpp discord_error.cpp 
       discord_http.cpp discord_websocket.cpp)
-    include_directories (${PROJECT_SOURCE_DIR}/3rdparty/)
+  include_directories (${PROJECT_SOURCE_DIR}/3rdparty/)
 endif ()
 
 set (Boost_USE_STATIC_LIBS ON)
