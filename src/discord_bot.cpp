@@ -175,7 +175,7 @@ int discord_init()
 #ifndef TESTING
   add_timer_func_list(discord_handle, "discord_handle");
   add_timer_interval(gettick() + 100, discord_handle, 0, 0,
-                     1000); // start in 1s each 1sec
+                     100);
 #endif
   return 0;
 }

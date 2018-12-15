@@ -1,12 +1,16 @@
 ## Overview
-- [Installation](https://github.com/Normynator/roCORDTesting/blob/dev/docs/installation.md)
-- [Configuration](https://github.com/Normynator/roCORDTesting/blob/dev/docs/configuration.md)
-  - [Config file](https://github.com/Normynator/roCORDTesting/blob/dev/docs/configuration.md#config-file)
-  - [CA Certificate](https://github.com/Normynator/roCORDTesting/blob/dev/docs/configuration.md#ca-certificate)
-- [Dependencies](https://github.com/Normynator/roCORDTesting/blob/dev/docs/dependencies.md#required-dependencies-for-rocord)
-- [Script Commands](https://github.com/Normynator/roCORDTesting/blob/dev/docs/script_commands.md#script-commands)
-  - [discord](https://github.com/Normynator/roCORDTesting/blob/dev/docs/script_commands.md#discordstring-string)
+- Installation
+  - [Manual installation](https://github.com/Normynator/roCORD/blob/development/docs/installation_manual_debian.md)
+  - [Debian](https://github.com/Normynator/roCORD/blob/development/docs/installation_debian.md)
+  - [CentOS](https://github.com/Normynator/roCORD/blob/development/docs/installation_centos.md)
+  - [Windows]
+- [Configuration](https://github.com/Normynator/roCORD/blob/development/docs/configuration.md)
+  - [Config file](https://github.com/Normynator/roCORD/blob/development/docs/configuration.md#config-file)
+  - [CA Certificate](https://github.com/Normynator/roCORD/blob/development/docs/configuration.md#ca-certificate)
+- [Dependencies](https://github.com/Normynator/roCORD/blob/development/docs/dependencies.md#required-dependencies-for-rocord)
+- [Script Commands](https://github.com/Normynator/roCORD/blob/development/docs/script_commands.md#script-commands)
+  - [discord](https://github.com/Normynator/roCORD/blob/development/docs/script_commands.md#discordstring-string)
 - At Commands
-- [Bot Commands](https://github.com/Normynator/roCORDTesting/blob/dev/docs/bot_commands.md)
-  - [!info](https://github.com/Normynator/roCORDTesting/blob/dev/docs/bot_commands.md#info)
-  - [!uptime](https://github.com/Normynator/roCORDTesting/blob/dev/docs/bot_commands.md#uptime)
+- [Bot Commands](https://github.com/Normynator/roCORD/blob/development/docs/bot_commands.md)
+  - [!info](https://github.com/Normynator/roCORD/blob/development/docs/bot_commands.md#info)
+  - [!uptime](https://github.com/Normynator/roCORD/blob/development/docs/bot_commands.md#uptime)
