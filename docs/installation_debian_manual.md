@@ -25,10 +25,10 @@ First we get roCORD src files.
 Now we go into your rathena folder and apply the patches.
 ```
   $ cd <path to your rathena>/src/map
-  $ patch channel.cpp <path to roCORD>/diff/rev1/channel.diff
-  $ patch map.cpp <path to roCORD>/diff/rev1/map.diff
-  $ patch script.cpp <path to roCORD>/diff/rev1/script.diff
-  $ patch CMakeLists.txt <path to roCORD>/diff/rev1/CmakeLists.txt.diff
+  $ patch channel.cpp <path to roCORD>/diff/rev<X>/channel.diff
+  $ patch map.cpp <path to roCORD>/diff/rev<X>/map.diff
+  $ patch script.cpp <path to roCORD>/diff/rev<X>/script.diff
+  $ patch CMakeLists.txt <path to roCORD>/diff/rev<X>/CmakeLists.txt.diff
 ```
 Next we are going to create folders for the roCORD config & src files.
 Also copying the files to them.
@@ -47,39 +47,12 @@ Source files:
  $ mkdir discord
  $ cp <path to roCORD>/src/* discord
  $ cp <path to roCORD>/CMakeLists.txt discord
+ $ cp -r <path to roCORD>/third_party/* <path to rathena>/3rdparty/.
 ```
 
 
 #### Installing and compiling dependencies
 Now we take care about the dependencies. We go to our home directory and install all requirements.
-
-We start with the newest CMake version. (if you have version 3.12 or higher you can skip this part)
-```
- $ cd
- $ git clone https://github.com/Kitware/CMake.git
- $ cd CMake
- $ ./bootstrap
- $ make
- $ sudo make install
-```
-
-Next up, websocket++ and nlohmann's json library. (websocket++ is a header only library, so no need to install that)
-```
- $ cd
- $ git clone https://github.com/zaphoyd/websocketpp.git
-```
-```
- $ cd
- $ git clone https://github.com/nlohmann/json.git
- $ cd json
- $ mkdir build && cd build
- $ /usr/local/bin/cmake ..
- $ make
- $ sudo make install
-```
-
-We are done with the dependencies which are not provided by OS package-manager.
-We just need to install some more packages and are ready to go.
 ```
  $ cd
  $ sudo apt-get install libboost-all-dev
@@ -93,7 +66,7 @@ Last we use all the components to compile roCORD together with rAthena.
  $ cd <path to your rathena>
  $ mkdir build
  $ cd build
- $ /usr/local/bin/cmake -G"Unix Makefiles" -DINSTALL_TO_SOURCE=ON -DJSON=/usr/local/include/nlohmann -DWEBSOCKETPP=~/websocketpp ..
+ $ cmake -G"Unix Makefiles" -DINSTALL_TO_SOURCE=ON ..
  $ make install
 ```
 Done! Now you can leave the build directory and start your server with ./athena-start start.
