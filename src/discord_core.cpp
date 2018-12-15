@@ -14,7 +14,10 @@
 #include <sstream>
 #include <string>
 #include <thread>
-
+#ifndef TESTING
+  #include "../channel.hpp"
+  #include "../clif.hpp"
+#endif
 #include "discord_error.hpp"
 
 namespace rocord {

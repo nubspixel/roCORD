@@ -33,7 +33,7 @@ TIMER_FUNC(discord_handle)
 {
   dcore->handle_events();
   // handle logs
-  add_timer(gettick() + 100, discord_handle, 0, 0);
+  //add_timer(gettick() + 100, discord_handle, 0, 0);
   return 0;
 }
 #endif
