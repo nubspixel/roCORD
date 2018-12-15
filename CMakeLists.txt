@@ -4,22 +4,20 @@ cmake_minimum_required (VERSION 3.6)
 set (CMAKE_CXX_STANDARD 11)  # enable C++11 standard
 
 set (CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++1y -Wall")
-set (roCORD_src
-      src/discord_log.cpp
-      src/discord_log_entry.cpp
-      src/discord_bot.cpp 
-      src/discord_core.cpp 
-      src/discord_error.cpp 
-      src/discord_http.cpp 
-      src/discord_websocket.cpp )
  
 if (DEFINED TRAVIS OR DEFINED STAND_ALONE)
 	project (roCORD)
   set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} 
                         "${CMAKE_SOURCE_DIR}/third_party/CMake/Modules/")
 	set (CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D TESTING")
-	set (roCORD_src 
-        ${roCORD_src}
+	set (roCORD_src
+        src/discord_log.cpp
+        src/discord_log_entry.cpp
+        src/discord_bot.cpp 
+        src/discord_core.cpp 
+        src/discord_error.cpp 
+        src/discord_http.cpp 
+        src/discord_websocket.cpp 
         src/main.cpp 
         src/clif_testing.cpp 
         src/showmsg_testing.cpp 
@@ -60,6 +58,14 @@ else () #RELEASE
 
   set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/3rdparty/CMake/Modules/")
 	message (STATUS "Using release setup!")
+  set(roCORD_src
+      discord_log.cpp
+      discord_log_entry.cpp
+      discord_bot.cpp 
+      discord_core.cpp 
+      discord_error.cpp 
+      discord_http.cpp 
+      discord_websocket.cpp)
   include_directories (${PROJECT_SOURCE_DIR}/3rdparty/)
 
 endif ()

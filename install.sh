@@ -1,3 +1,4 @@
+cp -r ../rathena ../rathena.bk
 mkdir ../rathena/src/map/discord
 mkdir ../rathena/conf/discord
 cp CMakeLists.txt ../rathena/src/map/discord/.
