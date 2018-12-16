@@ -111,6 +111,16 @@ void core::set_display_name(const std::string &display_name)
 }
 
 /*
+ *  Public
+ *  Bans a user from discord
+ */
+/*void core::ban_member(member memb, const std::string &reason, 
+    int delete_message_days) {
+  if
+  this.https->send_ban_event(memb->user.id, reason, delete_message_days); 
+}*/
+
+/*
  * Public
  * Handles events from discord API.
  */
@@ -164,10 +174,13 @@ void core::handle_ready(const std::string &guild_id)
  * Private
  * Handles a message from Discord server.
  */
-void core::handle_message_create(const std::string &author,
-                                 const std::string &nick, std::string &content,
+//   core::handle:message_create(message msg)
+void core::handle_message_create(std::shared_ptr<member> membr,
+                                 std::string &content,
                                  const std::string &d_channel)
 {
+  const std::string author = membr->get_username();
+  const std::string nick = membr->get_nick(); 
   //ShowInfo("Discord: Message Event!");
   logger->print("API: Message Event!", log_type::INFO);
   if (author == this->display_name)

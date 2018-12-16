@@ -5,7 +5,8 @@
 #include "discord_filter.hpp"
 
 namespace rocord {
-filter::filter(name_sensibility name_s, word_sensibility word_s, core& dcore) : name_s(name_s), word_s(word_s), dcore(dcore)
+filter::filter(name_sensibility name_s, word_sensibility word_s, core& dcore) 
+    : name_s(name_s), word_s(word_s), dcore(dcore)
 {
 }
 
@@ -29,36 +30,44 @@ void filter::reload_lists()
   // reload wordlist from file
 }
 
-void filter::check_name(const std::string &name)
+int filter::check_name(const std::string &name)
 {
   if (true) {
     switch(name_s) {
       case name_sensibility::BAN:
-        break;
+        // call ban in core
+        return -1; 
       case name_sensibility::RENAME:
+        // call change nick in core
         break;
       case name_sensibility::NOTHING:
       default:
-        return;
+        return 0;
     }
   }
+  return 0;
 }
 
-void filter::check_string(const std::string &str)
+int filter::check_message(const std::string &str)
 {
   if (true) {
     switch(word_s) {
       case word_sensibility::BAN:
+        // call ban in core
         break;
       case word_sensibility::CENSOR:
-        break;
+        // filter string
+        return 0;
       case word_sensibility::REMOVE:
+        // call delete in core
         break;
       case word_sensibility::NOTHING:
       default:
-        return;
+        return 0;
     }
+    return -1;
   }
+  return 0;
 }
 
 filter::~filter()

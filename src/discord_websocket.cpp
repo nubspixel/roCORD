@@ -9,6 +9,7 @@
 #include "discord_websocket.hpp"
 #include "discord_core.hpp"
 #include "discord_error.hpp"
+#include "discord_member.hpp"
 #include <boost/algorithm/string/predicate.hpp>
 #include <mutex>
 #include <sstream>
@@ -167,7 +168,8 @@ void websocket::on_message(
   websocketpp::lib::error_code errorCode;
   json payload;
 
-  try {
+  try 
+  {
     payload = json::parse(msg->get_payload());
     logger->print(payload, log_type::DEBUG, true);
 
@@ -206,14 +208,20 @@ void websocket::on_message(
         }
         else {
           std::cout << d.dump() << std::endl;
-          std::string author = d.at("author").at("username");
+          json user_tmp = d.at("member").at("user");
+          std::unique_ptr<user> usr(new user(user_tmp.at("id"),
+                user_tmp.at("username"), user_tmp.at("discriminator"),
+                user_tmp.at("avatar"), user_tmp.at("bot")));
+          //std::string author = d.at("author").at("username");
           std::string nick;
           if ((d.at("member").find("nick") != d.at("member").end()) &&
               !d.at("member").at("nick").is_null())
             nick = d.at("member").at("nick");
+          std::vector<uint64_t> roles; //TODO: fill
+          std::shared_ptr<member> membr(new member(std::move(usr), nick, roles));
           event_ptr =
               std::bind(&core::handle_message_create, std::placeholders::_1,
-                        author, nick, content, channel_id);
+                        membr, content, channel_id);
         }
       }
       else

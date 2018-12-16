@@ -41,8 +41,8 @@ public:
   virtual ~filter();
   int add_to_namelist(const std::string &name);
   int add_to_wordlist(const std::string &word);
-  void check_name(const std::string &name);
-  void check_string(const std::string &str);
+  int check_name(const std::string &name);
+  int check_message(const std::string &str);
   void reload_lists();
 private:
   name_sensibility name_s;

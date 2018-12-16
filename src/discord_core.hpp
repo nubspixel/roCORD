@@ -12,6 +12,7 @@
 #include "discord_http.hpp"
 #include "discord_websocket.hpp"
 #include "discord_log.hpp"
+#include "discord_member.hpp"
 #include <chrono>
 #include <functional>
 #include <queue>
@@ -37,6 +38,8 @@ public:
   void set_display_name(const std::string &display_name);
   void handle_events();
   State get_state();
+  //void ban_user();
+  void change_nick();
 
 private:
   friend class websocket;
@@ -48,7 +51,7 @@ private:
   void handle_guild_create();
   void handle_close();
   void handle_cmd_uptime(const std::string &channel_id);
-  void handle_message_create(const std::string &author, const std::string &nick,
+  void handle_message_create(std::shared_ptr<member> membr,
                              std::string &content,
                              const std::string &d_channel);
 

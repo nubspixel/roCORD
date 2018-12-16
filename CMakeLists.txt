@@ -11,6 +11,9 @@ if (DEFINED TRAVIS OR DEFINED STAND_ALONE)
                         "${CMAKE_SOURCE_DIR}/third_party/CMake/Modules/")
 	set (CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D TESTING")
 	set (roCORD_src
+        src/discord_member.cpp
+        src/discord_user.cpp
+        src/discord_filter.cpp
         src/discord_log.cpp
         src/discord_log_entry.cpp
         src/discord_bot.cpp 
@@ -59,6 +62,9 @@ else () #RELEASE
   set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/3rdparty/CMake/Modules/")
 	message (STATUS "Using release setup!")
   set(roCORD_src
+      discord_member.cpp
+      discord_user.cpp
+      discord_filter.cpp
       discord_log.cpp
       discord_log_entry.cpp
       discord_bot.cpp 

@@ -22,7 +22,7 @@ void log::print(std::string message, log_type ltype, bool need_sync)
   // need types, src and so on
 
   // HARDCODED logging level
-  int level = 0x03;
+  int level = 0xFF;
 
   if (level & ltype) {
     std::shared_ptr<log_entry> entry(new log_entry(message, ltype));
