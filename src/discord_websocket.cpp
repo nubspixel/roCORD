@@ -171,7 +171,7 @@ void websocket::on_message(
   try 
   {
     payload = json::parse(msg->get_payload());
-    logger->print(payload, log_type::DEBUG, true);
+    logger->print(payload.dump(), log_type::DEBUG, true);
 
     s = payload.at("s");
 

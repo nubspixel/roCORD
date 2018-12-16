@@ -72,6 +72,9 @@ void log::do_print(log_entry& entry)
     case log_type::ERROR:
       ShowError(entry.get_message().c_str());
       break;
+    case log_type::DEBUG:
+      ShowDebug(entry.get_message().c_str());
+      break;
     default:
       ShowError("[roCORD]: error in handle print");
   }
