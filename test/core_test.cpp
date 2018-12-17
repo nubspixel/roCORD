@@ -85,8 +85,6 @@ TEST_F(CoreTest, Constructor)
                          channel_mapping, std::move(dwss), std::move(dhttps), logger));
  
   EXPECT_TRUE(dcore != nullptr);
-  std::cout << "[INFO] Following asio.ssl error is caused by instantly destruction. System should still work, else test failed!" << std::endl;
-  //std::this_thread::sleep_for(std::chrono::seconds(2)); // workaround
 }
 
 /*TEST(CoreTestAdv, reconnect)

@@ -5,22 +5,6 @@
 #include <string>
 
 namespace rocord {
-
-/*
-enum sensibility_mode {
-  SOFT = 0x1,   // bad nickname: rename
-                // bad username: nothing
-                // bad word: censor
-                //
-  MEDIUM = 0x2, // bad nickname: rename
-                // bad username: ban
-                // bad word: remove message
-                //
-  HARD = 0x3    // bad nickname: ban
-                // bad username: ban
-                // bad word: remove message
-}
-*/
 enum class name_sensibility {
   BAN,
   RENAME,
@@ -42,11 +26,14 @@ public:
   int add_to_namelist(const std::string &name);
   int add_to_wordlist(const std::string &word);
   int check_name(const std::string &name);
-  int check_message(const std::string &str);
+  int check_message(std::string &str);
   void reload_lists();
+  void chmod_name(name_sensibility mode);
+  void chmod_word(word_sensibility mode);
 private:
-  name_sensibility name_s;
-  word_sensibility word_s;
+  name_sensibility name_mode;
+  word_sensibility word_mode;
+  std::vector<std::string> list;
   core& dcore;
 };
 }

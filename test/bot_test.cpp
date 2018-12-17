@@ -42,9 +42,9 @@ class Bot_test : public ::testing::Test {
 };
 
 
-TEST_F(Bot_test, drop_announce) {
+/*TEST_F(Bot_test, drop_announce) {
   discord_announce_drop("My test drop message!");
   // TODO validate
-}
+}*/
 }
 }

@@ -172,6 +172,7 @@ int discord_init()
   dcore = std::unique_ptr<rocord::core>(
       new rocord::core(display_name, token, presence, debug, channel_mapping,
                        std::move(dwss), std::move(dhttps), logger));
+  dcore->connect();
 #ifndef TESTING
   add_timer_func_list(discord_handle, "discord_handle");
   add_timer_interval(gettick() + 100, discord_handle, 0, 0,

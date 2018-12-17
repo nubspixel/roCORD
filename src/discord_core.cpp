@@ -33,7 +33,6 @@ core::core(std::string display_name_, std::string token_, std::string presence_,
       dhttps(std::move(dhttps_)), logger(logger_)
 {
   this->start_time = std::chrono::system_clock::now();
-  this->dwss->start();
   this->info();
 };
 
@@ -41,6 +40,15 @@ core::~core()
 {
   this->state = OFF;
   std::cout << "Core is shutting down now!" << std::endl;
+}
+
+/* Public
+ * Connects to the discord api.
+ */
+void core::connect()
+{
+  // TODO: check if already connected
+  this->dwss->start();
 }
 
 /*
@@ -278,7 +286,7 @@ void core::handle_close()
   this->dwss.reset(new websocket(
       this->token, "wss://gateway.discord.gg/?v=6&encoding=json",
       this->logger));
-  this->dwss->start();
+  connect();
 }
 
 /*

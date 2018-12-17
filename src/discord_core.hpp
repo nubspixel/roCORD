@@ -37,6 +37,7 @@ public:
                  std::string *name);
   void set_display_name(const std::string &display_name);
   void handle_events();
+  void connect();
   State get_state();
   //void ban_user();
   void change_nick();

@@ -385,11 +385,10 @@ void websocket::start()
 
 websocket::~websocket()
 {
-  //std::cout << "Trying to shutdown Websocket!" << std::endl;
   
   c.lock();
   //std::cout << "Websocket is shutting down!" << std::endl;
-  logger->print("Websocket is shutting down!", log_type::DEBUG, true);
+  logger->print("Websocket is shutting down!", log_type::DEBUG);
   if (this->started) { // TODO started and shutdown are useless because
                        // the locks sync it already.
     auto test = this->connection->get_handle();
@@ -398,13 +397,15 @@ websocket::~websocket()
                          "Connection closed by client.");
     }
     catch (websocketpp::exception const &e) {
-      std::cout << e.what() << std::endl;
+//      std::cout << e.what() << std::endl;
+        logger->print(e.what(), log_type::ERROR);
     }
     //std::cout << "DWSS Connection closing!" << std::endl;
-    logger->print("DWSS Connection closing!", log_type::DEBUG, true);
+    logger->print("DWSS Connection closing!", log_type::DEBUG);
   }
   this->shutdown = true;
   c.unlock();
-  this->socket_thr.join();
+  if (socket_thr.joinable())
+    this->socket_thr.join();
 }
 }
