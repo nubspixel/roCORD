@@ -15,25 +15,57 @@ protected:
   filter_test()
   {
     // You can do set-up work for each test here.
-    list = {"test1",
-            "test2",
-            "another_word",
-            "with space",
-            "multi space word",
-            "öäü",
-            "SpecialChars?!()&",
-            "Nothing",
-            "a"};
     
-    rocord::name_sensibility name_s = rocord::name_sensibility::NOTHING;
+    auto bad_user = std::unique_ptr<rocord::user>(new rocord::user(1234, 
+         "BadName", "1337", "", false));
+    auto good_user = std::unique_ptr<rocord::user>(new rocord::user(1234,
+        "GoodName", "1337", "", false));
+    members = std::vector<std::unique_ptr<rocord::member>>();
+    
+    std::vector<uint64_t> empty = std::vector<uint64_t>();
+
+    members.push_back(std::unique_ptr<rocord::member>(new rocord::member(
+            std::move(bad_user), "GoodName", empty)));
+    members.push_back(std::unique_ptr<rocord::member>(new rocord::member(
+            std::move(good_user), "GoodName", empty)));
+    members.push_back(std::unique_ptr<rocord::member>(new rocord::member(
+            std::move(good_user), "BadName", empty))); 
+    members.push_back(std::unique_ptr<rocord::member>(new rocord::member(
+            std::move(bad_user), "BadName", empty))); 
+    members.push_back(std::unique_ptr<rocord::member>(new rocord::member(
+            std::move(good_user), "", empty)));
+    members.push_back(std::unique_ptr<rocord::member>(new rocord::member(
+            std::move(bad_user), "", empty)));
+
+    
+    // members = {  good_nick_bad_user,
+    //              good_nick_good_user,
+    //              bad_nick_good_user,
+    //              bad_nick_bad_user,
+    //              no_nick_good_user,
+    //              no_nick_bad_user
+    //           }
+    EXPECT_EQ(members.size(), 6);
+
+    expect_nick = std::vector<std::string>();
+    for (auto it = members.begin(); it != members.end(); ++it)
+      expect_nick.push_back((*it)->get_nick());
+
+    EXPECT_EQ(members.size(), expect_nick.size());
+ 
+    
+    rocord::username_sensibility name_s = rocord::username_sensibility::NOTHING;
     rocord::word_sensibility word_s = rocord::word_sensibility::NOTHING;
+    rocord::nickname_sensibility nick_s = rocord::nickname_sensibility::NOTHING;
+
     std::shared_ptr<rocord::log> logger(new rocord::log());
-    auto mapping = std::make_shared<std::vector<std::pair<std::string, std::string>>>();
+    auto mapping = 
+      std::make_shared<std::vector<std::pair<std::string, std::string>>>();
     dcore = std::unique_ptr<rocord::core>(new rocord::core("Testing Filter",
           "some Token", "some presence", 0, mapping, nullptr, nullptr, logger));
 
-    filter_ = std::unique_ptr<rocord::filter>(new rocord::filter(name_s, word_s,
-        *dcore));
+    filter_ = std::unique_ptr<rocord::filter>(new rocord::filter(name_s, nick_s,
+          word_s, *dcore));
  
   }
 
@@ -57,26 +89,24 @@ protected:
     // before the destructor).
   }
 
-  /*
-   * Tests mode if filter does not apply
-   */
-  void test_nothing() {
-    std::string not_on_lst = "not";
-    std::string tmp;
-    int res;
-
-    tmp = not_on_lst;
-    res = filter_->check_name(not_on_lst);
-    // nothing should be changed and execution should go on!
-    EXPECT_EQ(res, 0);
-    EXPECT_EQ(tmp, not_on_lst);
+  void check_name_run() {
+    int ret;
+    for (int i = 0; i < members.size(); i++) {
+      ret = filter_->check_name(*members[i]);
+      EXPECT_EQ(ret, expect_ret[i]) << "i was " << i;
+      EXPECT_EQ(members[i]->get_nick(), expect_nick[i]); 
+    }
   }
 
   // Objects declared here can be used by all tests in the test case for
   // Filter Test.
   std::unique_ptr<rocord::filter> filter_;
   std::unique_ptr<rocord::core> dcore;
-  std::vector<std::string> list;
+  std::vector<std::unique_ptr<rocord::member>> members;
+  std::vector<int> expect_ret;
+  std::vector<std::string> expect_nick;
+
+  //std::vector<rocord::member> list;
 };
 
 TEST_F(filter_test, constructor)
@@ -84,65 +114,63 @@ TEST_F(filter_test, constructor)
   EXPECT_TRUE(filter_ != nullptr);
 }
 
+/* check_name tests
+ *
+ * Nickname   Username      Result
+ * BAN        BAN           Bad user/nickname -> BAN
+ * BAN        FORCE_NICK    If bad nick -> BAN, if bad user -> enforce nickname 
+ * BAN        NOTHING       If bad nick -> BAN
+ * DELETE     BAN           If bad nick -> DELETE, if bad user -> BAN
+ * DELETE     FORCE_NICK    If bad nick/user -> DELETE and set new generic Nickname else if only bad nick -> DELETE nick
+ * DELETE     NOTHING       If bad nick -> DELETE
+ * RENAME     BAN           If bad nick -> RENAME, if bad user -> BAN 
+ * RENAME     FORCE_NICK    If bad nick -> RENAME, if bad user -> enforce nick
+ * RENAME     NOTHING       If bad nick -> RENAME
+ * NOTHING    BAN           If bad user -> BAN
+ * NOTHING    FORCE_NICK    If bad user -> FORCE_NICK
+ * NOTHING    NOTHING       NOTHING
+ */
 
 // TODO check if EXPECT_EQ(string1, string2) tests content not object.
-TEST_F(filter_test, check_name_ban)
+
+TEST_F(filter_test, check_name_1)
 {
-  std::string tmp;
-  int retval;
+  // set the appropriate mode for the test
+  // BAN        BAN           Bad user/nickname -> BAN
+  filter_->chmod_nickname(rocord::nickname_sensibility::BAN);
+  filter_->chmod_username(rocord::username_sensibility::BAN);
   
-  // set the appropriate mode for the test
-  filter_->chmod_name(rocord::name_sensibility::BAN);
+  expect_ret = { -1, 0, -1, -1, 0, -1 };
+  // nothing to do for expect_nick since we want the nicknames to be unchanged!
 
-  for (auto it = list.begin(); it != list.end(); ++it) {
-    tmp = *it;
-    retval = filter_->check_name(*it);
-    //check if there was a ban and execution stops!
-    EXPECT_EQ(retval, -1);
-    EXPECT_EQ(tmp, *it);
-  }
-  test_nothing();
+  filter_test::check_name_run();
 }
 
-TEST_F(filter_test, check_name_rename)
+TEST_F(filter_test, check_name_2)
 {
-  std::string tmp;
-  int res;
-
   // set the appropriate mode for the test
-  filter_->chmod_name(rocord::name_sensibility::RENAME);
+  // BAN        FORCE_NICK    If bad nick -> BAN, if bad user -> enforce nickname 
+  filter_->chmod_nickname(rocord::nickname_sensibility::BAN);
+  filter_->chmod_username(rocord::username_sensibility::FORCE_NICK);
+  
+  expect_ret = { 0, 0, -1, -1, 0, 0};
+  // no_nick_bad_user has to get a generic nickname
+  expect_nick[5] = "Removed Nickname";
 
-  for (auto it = list.begin(); it != list.end(); ++it) {
-    tmp = *it;
-    res = filter_->check_name(*it);
-    //check if there was a rename and execution goes on!
-    EXPECT_EQ(res, 0);
-    EXPECT_NE(tmp, *it);
-  }
-  test_nothing();  
+  filter_test::check_name_run();
 }
 
-TEST_F(filter_test, check_name_nothing)
+TEST_F(filter_test, check_name_3)
 {
-  std::string tmp;
-  int res;
-
-  // set the appropriate mode for the test
-  filter_->chmod_name(rocord::name_sensibility::NOTHING);
-
-  for (auto it = list.begin(); it != list.end(); ++it) {
-    tmp = *it;
-    res = filter_->check_name(*it);
-    // nothing should be changed and execution should go on!
-    EXPECT_EQ(res, 0);
-    EXPECT_EQ(tmp, *it);
-  }
-  test_nothing();
 }
 
+TEST_F(filter_test, check_name_4)
+{
+
+}
 /*TEST_F(filter_test, check_word_ban)
 {
-
+  // mock call core::ban
 }
 
 TEST_F(filter_test, check_word_censor)
@@ -152,7 +180,7 @@ TEST_F(filter_test, check_word_censor)
 
 TEST_F(filter_test, check_word_remove)
 {
-
+  // mock call core::delete_message
 }
 
 TEST_F(filter_test, check_word_nothing)

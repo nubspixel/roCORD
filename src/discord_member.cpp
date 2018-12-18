@@ -1,9 +1,9 @@
 #include "discord_member.hpp"
 
 namespace rocord {
-member::member(std::unique_ptr<user> usr, std::string nick, 
+member::member(std::shared_ptr<user> usr, std::string nick, 
       std::vector<uint64_t> roles)
-      : usr(std::move(usr)), nick(nick), roles(roles)
+      : usr(usr), nick(nick), roles(roles)
   {
   }
 

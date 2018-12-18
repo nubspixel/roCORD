@@ -5,8 +5,8 @@
 #include "discord_filter.hpp"
 
 namespace rocord {
-filter::filter(name_sensibility name_mode, word_sensibility word_mode, core& dcore) 
-    : name_mode(name_mode), word_mode(word_mode), dcore(dcore)
+filter::filter(username_sensibility user_mode, nickname_sensibility nick_mode, word_sensibility word_mode, core& dcore) 
+    : user_mode(user_mode), nick_mode(nick_mode), word_mode(word_mode), dcore(dcore)
 {
 }
 
@@ -30,9 +30,14 @@ void filter::reload_lists()
   // reload wordlist from file
 }
 
-void filter::chmod_name(name_sensibility mode)
+void filter::chmod_username(username_sensibility mode)
 {
-  name_mode = mode;
+  user_mode = mode;
+}
+
+void filter::chmod_nickname(nickname_sensibility mode)
+{
+  nick_mode = mode;
 }
 
 void filter::chmod_word(word_sensibility mode)
@@ -40,16 +45,16 @@ void filter::chmod_word(word_sensibility mode)
   word_mode = mode;
 }
 
-int filter::check_name(const std::string &name)
+int filter::check_name(member &memb)
 {
   if (false /* TODO: condition needed */) { //check if name is in list
-    switch(name_mode) {
-      case name_sensibility::BAN:
+    switch(user_mode) {
+      case username_sensibility::BAN:
         // call ban in core
         break;
-      case name_sensibility::RENAME:
+      case username_sensibility::FORCE_NICK:
         // call change nick in core & change name var
-      case name_sensibility::NOTHING:
+      case username_sensibility::NOTHING:
       default:
         return 0;
     }

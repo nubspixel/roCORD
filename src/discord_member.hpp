@@ -13,7 +13,7 @@ namespace rocord {
 class member
 {
 public:
-  member(std::unique_ptr<user> usr, std::string nick, 
+  member(std::shared_ptr<user> usr, std::string nick, 
       std::vector<uint64_t> roles);
   virtual ~member();
 
@@ -24,7 +24,7 @@ public:
   bool has_role(uint64_t role_id);
 
 private:
-  std::unique_ptr<user> usr;
+  std::shared_ptr<user> usr;
   std::string nick;
   std::vector<uint64_t> roles;
 };

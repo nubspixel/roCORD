@@ -39,7 +39,7 @@ core::core(std::string display_name_, std::string token_, std::string presence_,
 core::~core()
 {
   this->state = OFF;
-  std::cout << "Core is shutting down now!" << std::endl;
+  logger->print("Core is shutting down now!", log_type::INFO);
 }
 
 /* Public
