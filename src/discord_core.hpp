@@ -13,6 +13,7 @@
 #include "discord_websocket.hpp"
 #include "discord_log.hpp"
 #include "discord_member.hpp"
+#include "discord_core_interface.hpp"
 #include <chrono>
 #include <functional>
 #include <queue>
@@ -23,7 +24,7 @@
 
 enum State { OFF, CONNECTING, ON };
 namespace rocord {
-class core {
+class core : public core_interface {
 public:
   core(std::string display_name_, std::string token_, std::string presence_,
        int debug_,
@@ -39,7 +40,7 @@ public:
   void handle_events();
   void connect();
   State get_state();
-  //void ban_user();
+  void ban_member(member &memb, const std::string &reason, int delete_message_days);
   void change_nick();
 
 private:

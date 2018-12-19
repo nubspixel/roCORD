@@ -1,7 +1,7 @@
 #ifndef discord_filter_hpp
 #define discord_filter_hpp
 
-#include "discord_core.hpp"
+#include "discord_core_interface.hpp"
 #include "discord_member.hpp"
 #include <string>
 
@@ -29,7 +29,7 @@ enum class word_sensibility {
 class filter {
 public:
   filter(username_sensibility user_mode, nickname_sensibility nick_mode,
-      word_sensibility word_mode, core& dcore
+      word_sensibility word_mode, core_interface& icore
       /*, some lists */);
   virtual ~filter();
   int add_to_namelist(const std::string &name);
@@ -45,7 +45,7 @@ private:
   nickname_sensibility nick_mode;
   word_sensibility word_mode;
   std::vector<std::string> list;
-  core& dcore;
+  core_interface& icore;
 };
 }
 #endif /* discord_filter_hpp */

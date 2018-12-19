@@ -1,4 +1,5 @@
 #include "../src/discord_filter.hpp"
+#include "core_mock.hpp"
 #include "gmock/gmock-matchers.h"
 #include "gmock/gmock-more-matchers.h"
 #include "gmock/gmock.h"
@@ -7,6 +8,7 @@
 
 namespace testing {
 namespace gmock_matchers_test {
+
 
 class filter_test : public ::testing::Test {
 protected:
@@ -37,7 +39,6 @@ protected:
     members.push_back(std::unique_ptr<rocord::member>(new rocord::member(
             std::move(bad_user), "", empty)));
 
-    
     // members = {  good_nick_bad_user,
     //              good_nick_good_user,
     //              bad_nick_good_user,
@@ -58,14 +59,14 @@ protected:
     rocord::word_sensibility word_s = rocord::word_sensibility::NOTHING;
     rocord::nickname_sensibility nick_s = rocord::nickname_sensibility::NOTHING;
 
-    std::shared_ptr<rocord::log> logger(new rocord::log());
+    //std::shared_ptr<rocord::log> logger(new rocord::log());
     auto mapping = 
       std::make_shared<std::vector<std::pair<std::string, std::string>>>();
-    dcore = std::unique_ptr<rocord::core>(new rocord::core("Testing Filter",
-          "some Token", "some presence", 0, mapping, nullptr, nullptr, logger));
-
+    //dcore = std::unique_ptr<rocord::core>(new rocord::core("Testing Filter",
+    //      "some Token", "some presence", 0, mapping, nullptr, nullptr, logger));
+    
     filter_ = std::unique_ptr<rocord::filter>(new rocord::filter(name_s, nick_s,
-          word_s, *dcore));
+          word_s, mcore));
  
   }
 
@@ -94,17 +95,27 @@ protected:
     for (int i = 0; i < members.size(); i++) {
       ret = filter_->check_name(*members[i]);
       EXPECT_EQ(ret, expect_ret[i]) << "i was " << i;
-      EXPECT_EQ(members[i]->get_nick(), expect_nick[i]); 
+      EXPECT_EQ(members[i]->get_nick(), expect_nick[i]);
+      EXPECT_CALL(mcore, ban_member(*members[i], "Reason: bad nickname",
+            7)).Times(expect_calls[i].ban);
+      EXPECT_CALL(mcore, change_nick()).Times(expect_calls[i].chnick);
     }
   }
 
   // Objects declared here can be used by all tests in the test case for
   // Filter Test.
+  struct call {
+    int ban;
+    int chnick;
+  };
+
   std::unique_ptr<rocord::filter> filter_;
-  std::unique_ptr<rocord::core> dcore;
+  //std::unique_ptr<rocord::core> dcore;
+  rocord::core_mock mcore;
   std::vector<std::unique_ptr<rocord::member>> members;
   std::vector<int> expect_ret;
   std::vector<std::string> expect_nick;
+  std::vector<call> expect_calls;
 
   //std::vector<rocord::member> list;
 };
@@ -142,6 +153,13 @@ TEST_F(filter_test, check_name_1)
   
   expect_ret = { -1, 0, -1, -1, 0, -1 };
   // nothing to do for expect_nick since we want the nicknames to be unchanged!
+  //                ban chnick 
+  expect_calls = { { 1,   0 },
+                   { 0,   0 },
+                   { 1,   0 },
+                   { 1,   0 },
+                   { 0,   0 },
+                   { 1,   0 } };
 
   filter_test::check_name_run();
 }
@@ -156,6 +174,13 @@ TEST_F(filter_test, check_name_2)
   expect_ret = { 0, 0, -1, -1, 0, 0};
   // no_nick_bad_user has to get a generic nickname
   expect_nick[5] = "Removed Nickname";
+  //                ban chnick
+  expect_calls = { { 0,   0 },
+                   { 0,   0 },
+                   { 1,   0 },
+                   { 1,   0 },
+                   { 0,   0 },
+                   { 0,   1 } };
 
   filter_test::check_name_run();
 }

@@ -5,8 +5,8 @@
 #include "discord_filter.hpp"
 
 namespace rocord {
-filter::filter(username_sensibility user_mode, nickname_sensibility nick_mode, word_sensibility word_mode, core& dcore) 
-    : user_mode(user_mode), nick_mode(nick_mode), word_mode(word_mode), dcore(dcore)
+filter::filter(username_sensibility user_mode, nickname_sensibility nick_mode, word_sensibility word_mode, core_interface& icore) 
+    : user_mode(user_mode), nick_mode(nick_mode), word_mode(word_mode), icore(icore)
 {
 }
 

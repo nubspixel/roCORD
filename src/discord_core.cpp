@@ -122,12 +122,15 @@ void core::set_display_name(const std::string &display_name)
  *  Public
  *  Bans a user from discord
  */
-/*void core::ban_member(member memb, const std::string &reason, 
+void core::ban_member(member &memb, const std::string &reason, 
     int delete_message_days) {
-  if
-  this.https->send_ban_event(memb->user.id, reason, delete_message_days); 
-}*/
 
+//  this.https->send_ban_event(memb->user.id, reason, delete_message_days); 
+}
+
+void core::change_nick() {
+  // TODO: implement
+}
 /*
  * Public
  * Handles events from discord API.
