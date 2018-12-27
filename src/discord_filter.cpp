@@ -49,12 +49,12 @@ int filter::check_name(member &memb)
 {
   if (true /* TODO: condition needed */) { //check if name is in list
     switch(user_mode) {
-      case username_sensibility::BAN:
+      case username_sensibility::ban:
   //     	icore.ban_member(memb, "Reason: bad username", 7); 	 
         break;
-      case username_sensibility::FORCE_NICK:
+      case username_sensibility::force_nick:
         // call change nick in core & change name var
-      case username_sensibility::NOTHING:
+      case username_sensibility::nothing:
       default:
         return 0;
     }
@@ -67,15 +67,15 @@ int filter::check_message(std::string &str)
 {
   if (false /* TODO: condition needed */) { //check if word is in list
     switch(word_mode) {
-      case word_sensibility::BAN:
+      case word_sensibility::ban:
         // call ban in core
         break;
-      case word_sensibility::REMOVE:
+      case word_sensibility::remove:
         // call delete in core
         break;
-      case word_sensibility::CENSOR:
+      case word_sensibility::censor:
         // filter string
-      case word_sensibility::NOTHING:
+      case word_sensibility::nothing:
       default:
         return 0;
     }

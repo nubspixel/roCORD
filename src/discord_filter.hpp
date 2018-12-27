@@ -7,23 +7,23 @@
 
 namespace rocord {
 enum class nickname_sensibility {
-  BAN,
-  DELETE,
-  RENAME,
-  NOTHING
+  ban,
+  remove,
+  rename,
+  nothing
 };
 
 enum class username_sensibility {
-  BAN,
-  FORCE_NICK,
-  NOTHING
+  ban,
+  force_nick,
+  nothing
 };
 
 enum class word_sensibility {
-  BAN,
-  CENSOR,
-  REMOVE,
-  NOTHING
+  ban,
+  censor,
+  remove,
+  nothing
 };
 
 class filter {

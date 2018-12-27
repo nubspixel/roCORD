@@ -100,7 +100,7 @@ int discord_init()
   std::string display_name, token, presence;
   if (ifs.fail()) {
     //ShowError("[roCORD] Failed to open config.json!\n");
-    logger->print("Failed to open config.json!", rocord::log_type::ERROR);
+    logger->print("Failed to open config.json!", rocord::log_type::error);
     return -1;
   }
 
@@ -110,7 +110,7 @@ int discord_init()
       token = data.at("token");
     else {
       //ShowError("[roCORD] Token is not defined! Aborting!\n");
-      logger->print("Token is not defined! Aborting!", rocord::log_type::ERROR);
+      logger->print("Token is not defined! Aborting!", rocord::log_type::error);
       return -1;
     }
 
@@ -119,7 +119,7 @@ int discord_init()
     else {
       //ShowInfo("[roCORD] No display_name defined using alternative!\n");
       logger->print("No display_name defined using alternative!",
-                    rocord::log_type::WARNING);
+                    rocord::log_type::warning);
       display_name = "roCORD";
     }
 
@@ -128,7 +128,7 @@ int discord_init()
     else {
       //ShowInfo("[roCORD] No presence defined using alternative!\n");
       logger->print("No presence defined using alternative!",
-                    rocord::log_type::WARNING);
+                    rocord::log_type::warning);
       presence = "by Normynator";
     }
 
@@ -149,7 +149,7 @@ int discord_init()
     if (channel_mapping->empty()) {
       //ShowError("[roCORD] No channel mapping found! Aborting!\n");
       logger->print("No channel mapping found! Aborting!", 
-                    rocord::log_type::ERROR);
+                    rocord::log_type::error);
       return -1;
     }
   }

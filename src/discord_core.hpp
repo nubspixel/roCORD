@@ -41,7 +41,7 @@ public:
   void connect();
   State get_state();
   void ban_member(member &memb, const std::string &reason, int delete_message_days);
-  void change_nick();
+  void change_nick(member &memb, const std::string &new_nick);
 
 private:
   friend class websocket;

@@ -60,19 +60,19 @@ void log::welcome()
 void log::do_print(log_entry& entry)
 {
   switch(entry.get_type()) {
-    case log_type::WARNING:
+    case log_type::warning:
       ShowWarning(entry.get_message().c_str());
       break;
-    case log_type::INFO:
+    case log_type::info:
       ShowInfo(entry.get_message().c_str());
       break;
-    case log_type::STATUS:
+    case log_type::status:
       ShowStatus(entry.get_message().c_str());
       break;
-    case log_type::ERROR:
+    case log_type::error:
       ShowError(entry.get_message().c_str());
       break;
-    case log_type::DEBUG:
+    case log_type::debug:
       ShowDebug(entry.get_message().c_str());
       break;
     default:

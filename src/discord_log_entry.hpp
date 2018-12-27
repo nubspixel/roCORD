@@ -14,11 +14,11 @@
 namespace rocord {
 
 enum log_type {
-    DEBUG   = 0x01,
-    INFO    = 0x02,
-    STATUS  = 0x04,
-    WARNING = 0x08,
-    ERROR   = 0x0C
+    debug  = 0x01,
+    info    = 0x02,
+    status  = 0x04,
+    warning = 0x08,
+    error   = 0x0C
 };
 
 class log_entry 

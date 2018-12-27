@@ -14,7 +14,7 @@ public:
   virtual void handle_events() = 0;
   virtual void connect() = 0;
   virtual void ban_member(member &memb, const std::string &reason, int delete_message_days) = 0;
-  virtual void change_nick() = 0;
+  virtual void change_nick(member &memb, const std::string &new_nick) = 0;
 };
 }
 #endif /* discord_core_interface_hpp */

@@ -70,9 +70,9 @@ protected:
 	*/
  
     
-    rocord::username_sensibility name_s = rocord::username_sensibility::NOTHING;
-    rocord::word_sensibility word_s = rocord::word_sensibility::NOTHING;
-    rocord::nickname_sensibility nick_s = rocord::nickname_sensibility::NOTHING;
+    rocord::username_sensibility name_s = rocord::username_sensibility::nothing;
+    rocord::word_sensibility word_s = rocord::word_sensibility::nothing;
+    rocord::nickname_sensibility nick_s = rocord::nickname_sensibility::nothing;
 
     //std::shared_ptr<rocord::log> logger(new rocord::log());
     auto mapping = 
@@ -115,6 +115,12 @@ protected:
             7)).Times(ban_nickname[i]);
 	    EXPECT_CALL(mcore, ban_member(*members[i], "Reason: bad username",
 			7)).Times(ban_username[i]);
+		if (force_nick[i] == "no_nick")
+			EXPECT_CALL(mcore, change_nick(*members[i], _)).Times(0); 
+		else
+			EXPECT_CALL(mcore, change_nick(*members[i], force_nick[i]
+					)).Times(1);
+		EXPECT_CALL(mcore, change_nick(*members[i], "")).Times(delete_nick[i]);
 	    EXPECT_CALL(check, Call(i));
 	  }
 	}
@@ -133,6 +139,9 @@ protected:
   // Filter Test.
   std::vector<int> ban_nickname = {0, 0, 0, 0, 0, 0};
   std::vector<int> ban_username = {0, 0, 0, 0, 0, 0};
+  std::vector<int> delete_nick = {0, 0, 0, 0, 0, 0};
+  std::vector<std::string> force_nick = {"no_nick", "no_nick", "no_nick",
+	  									"no_nick", "no_nick", "no_nick"}; 
 
   
   std::unique_ptr<rocord::filter> filter_;
@@ -151,28 +160,28 @@ TEST_F(filter_test, constructor)
 /* check_name tests
  *
  * Nickname   Username      Result
- * BAN        BAN           Bad user/nickname -> BAN
- * BAN        FORCE_NICK    If bad nick -> BAN, if bad user -> enforce nickname 
- * BAN        NOTHING       If bad nick -> BAN
- * DELETE     BAN           If bad nick -> DELETE, if bad user -> BAN
- * DELETE     FORCE_NICK    If bad nick/user -> DELETE and set new generic Nickname else if only bad nick -> DELETE nick
- * DELETE     NOTHING       If bad nick -> DELETE
- * RENAME     BAN           If bad nick -> RENAME, if bad user -> BAN 
- * RENAME     FORCE_NICK    If bad nick -> RENAME, if bad user -> enforce nick
- * RENAME     NOTHING       If bad nick -> RENAME
- * NOTHING    BAN           If bad user -> BAN
- * NOTHING    FORCE_NICK    If bad user -> FORCE_NICK
- * NOTHING    NOTHING       NOTHING
+ * ban        ban           Bad user/nickname -> ban
+ * ban        force_nick    If bad nick -> ban, if bad user -> enforce nickname 
+ * ban        nothing       If bad nick -> ban
+ * remove     ban           If bad nick -> remove, if bad user -> ban
+ * remove     force_nick    If bad nick/user -> remove and set new generic Nickname else if only bad nick -> remove nick
+ * remove     nothing       If bad nick -> remove
+ * rename     ban           If bad nick -> rename, if bad user -> ban 
+ * rename     force_nick    If bad nick -> rename, if bad user -> enforce nick
+ * rename     nothing       If bad nick -> rename
+ * nothing    ban           If bad user -> ban
+ * nothing    force_nick    If bad user -> force_nick
+ * nothing    nothing       nothing
  */
 
 // TODO check if EXPECT_EQ(string1, string2) tests content not object.
 
-TEST_F(filter_test, check_name_BAN_BAN)
+TEST_F(filter_test, check_name_ban_ban)
 {
   // set the appropriate mode for the test
-  // BAN        BAN           Bad user/nickname -> BAN
-  filter_->chmod_nickname(rocord::nickname_sensibility::BAN);
-  filter_->chmod_username(rocord::username_sensibility::BAN);
+  // ban        ban           Bad user/nickname -> ban
+  filter_->chmod_nickname(rocord::nickname_sensibility::ban);
+  filter_->chmod_username(rocord::username_sensibility::ban);
 
   ban_nickname[2] = 1;
   ban_nickname[3] = 1;
@@ -184,12 +193,27 @@ TEST_F(filter_test, check_name_BAN_BAN)
   filter_test::check_name_run();
 }
 
-TEST_F(filter_test, check_name_2)
+TEST_F(filter_test, check_name_ban_force_nick)
 {
   // set the appropriate mode for the test
-  // BAN        FORCE_NICK    If bad nick -> BAN, if bad user -> enforce nickname 
-  filter_->chmod_nickname(rocord::nickname_sensibility::BAN);
-  filter_->chmod_username(rocord::username_sensibility::FORCE_NICK);
+  // ban        force_nick    If bad nick -> ban, if bad user -> enforce nickname 
+  filter_->chmod_nickname(rocord::nickname_sensibility::ban);
+  filter_->chmod_username(rocord::username_sensibility::force_nick);
+ 
+  ban_nickname[2] = 1;
+  ban_nickname[3] = 1;
+
+  force_nick[5] = "Generic Nick";
+
+  filter_test::check_name_run();
+}
+
+TEST_F(filter_test, check_name_ban_nothing)
+{
+  // set the appropriate mode for the test
+  // ban        nothing       If bad nick -> ban
+  filter_->chmod_nickname(rocord::nickname_sensibility::ban);
+  filter_->chmod_username(rocord::username_sensibility::nothing);
  
   ban_nickname[2] = 1;
   ban_nickname[3] = 1;
@@ -197,13 +221,87 @@ TEST_F(filter_test, check_name_2)
   filter_test::check_name_run();
 }
 
-TEST_F(filter_test, check_name_NOTHING_NOTHING)
+TEST_F(filter_test, check_name_remove_ban)
 {
-  filter_->chmod_nickname(rocord::nickname_sensibility::NOTHING);
-  filter_->chmod_username(rocord::username_sensibility::NOTHING);
+  // set the appropriate mode for the test
+  // remove     ban           If bad nick -> remove, if bad user -> ban
+  filter_->chmod_nickname(rocord::nickname_sensibility::remove);
+  filter_->chmod_username(rocord::username_sensibility::ban);
+  
+  ban_username[0] = 1;
+  ban_username[3] = 1;
+  ban_username[5] = 1;
+
+  delete_nick[2] = 1;
+  delete_nick[3] = 1;
+
+  filter_test::check_name_run();
+}
+
+TEST_F(filter_test, check_name_remove_force_nick)
+{
+  // set the appropriate mode for the test
+  // remove     force_nick    If bad nick/user -> remove and set new generic Nickname else if only bad nick -> remove nick
+  filter_->chmod_nickname(rocord::nickname_sensibility::remove);
+  filter_->chmod_username(rocord::username_sensibility::force_nick);
+
+  force_nick[3] = "Generic Nick";
+  force_nick[5] = "Generic Nick";
+
+  delete_nick[2] = 1;
  
   filter_test::check_name_run();
 }
+
+TEST_F(filter_test, check_name_remove_nothing)
+{
+  // set the appropriate mode for the test
+  // remove     nothing       If bad nick -> remove
+  filter_->chmod_nickname(rocord::nickname_sensibility::remove);
+  filter_->chmod_username(rocord::username_sensibility::nothing);
+
+  delete_nick[2] = 1;
+  delete_nick[3] = 1;
+ 
+  filter_test::check_name_run();
+}
+
+TEST_F(filter_test, check_name_rename_ban)
+{
+  // set the appropriate mode for the test
+  // rename     ban           If bad nick -> rename, if bad user -> ban 
+  filter_->chmod_nickname(rocord::nickname_sensibility::rename);
+  filter_->chmod_username(rocord::username_sensibility::ban);
+
+  ban_username[0] = 1;
+  ban_username[3] = 1;
+  ban_username[5] = 1;
+
+  force_nick[2] = "Renamed Nick";
+  force_nick[3] = "Renamed Nick";
+ 
+  filter_test::check_name_run();
+}
+
+TEST_F(filter_test, check_name_rename_force_nick)
+{
+  // set the appropriate mode for the test
+  // rename     force_nick    If bad nick -> rename, if bad user -> enforce nick
+  filter_->chmod_nickname(rocord::nickname_sensibility::rename);
+  filter_->chmod_username(rocord::username_sensibility::force_nick);
+ 
+  filter_test::check_name_run();
+}
+
+
+TEST_F(filter_test, check_name_nothing_nothing)
+{
+  filter_->chmod_nickname(rocord::nickname_sensibility::nothing);
+  filter_->chmod_username(rocord::username_sensibility::nothing);
+ 
+  filter_test::check_name_run();
+}
+
 
 TEST_F(filter_test, check_name_4)
 {
