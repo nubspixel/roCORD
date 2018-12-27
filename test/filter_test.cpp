@@ -110,7 +110,7 @@ protected:
   	MockFunction<void(int check_point_name)> check;
 	{
 	  InSequence s;
-      for (int i = 0; i < members.size(); ++i) {
+      for (unsigned int i = 0; i < members.size(); ++i) {
         EXPECT_CALL(mcore, ban_member(*members[i], "Reason: bad nickname",
             7)).Times(ban_nickname[i]);
 	    EXPECT_CALL(mcore, ban_member(*members[i], "Reason: bad username",
@@ -126,7 +126,7 @@ protected:
 	}
 
 	// Run all tests in sequence
-	for (int i = 0; i < members.size(); ++i) {
+	for (unsigned int i = 0; i < members.size(); ++i) {
 	  std::string nick = members[i]->get_nick();
       std::cout << "Testing: Nickname=" << ((nick == "") ? "no_nick" : nick) << " Username="
 		  << members[i]->get_username() << std::endl;

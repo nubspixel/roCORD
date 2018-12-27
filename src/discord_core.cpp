@@ -34,7 +34,7 @@ namespace rocord {
 	{
 		this->start_time = std::chrono::system_clock::now();
 		this->info();
-	};
+	}
 
 	core::~core()
 	{
@@ -219,7 +219,7 @@ void core::handle_message_create(std::shared_ptr<member> membr,
   Channel *r_channel = channel_name2channel((char *)channel.c_str(), NULL, 0);
   if (!r_channel) {
     //ShowError("[roCORD] Channel was not found!");
-    logger->print("Channel was not found!", log_type::ERROR);
+    logger->print("Channel was not found!", log_type::error);
     return;
   }
 

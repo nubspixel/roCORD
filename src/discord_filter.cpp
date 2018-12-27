@@ -14,6 +14,8 @@ int filter::add_to_namelist(const std::string &name)
 {
   // update list
   // save to file
+  if (name == "")
+	  return -1;
   return 0;
 }
 
@@ -21,6 +23,8 @@ int filter::add_to_wordlist(const std::string &word)
 {
   // update list
   // save to file
+  if (word == "")
+	  return -1;
   return 0;
 }
 
@@ -50,7 +54,7 @@ int filter::check_name(member &memb)
   if (true /* TODO: condition needed */) { //check if name is in list
     switch(user_mode) {
       case username_sensibility::ban:
-  //     	icore.ban_member(memb, "Reason: bad username", 7); 	 
+       	icore.ban_member(memb, "Reason: bad username", 7); 	 
         break;
       case username_sensibility::force_nick:
         // call change nick in core & change name var

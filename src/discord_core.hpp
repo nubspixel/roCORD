@@ -62,18 +62,18 @@ private:
   bool check_ISO8859_1(const std::string &content);
 
   // Private varibales
-  int debug;
   State state = OFF;
   std::string display_name;
   std::string token;
   std::string presence;
-  std::string guild_id = "";
-  std::chrono::time_point<std::chrono::system_clock> start_time;
+  int debug;
+  std::shared_ptr<std::vector<std::pair<std::string, std::string>>>
+      channel_mapping; // TODO: has to be shared???
   std::unique_ptr<websocket> dwss;
   std::unique_ptr<http> dhttps;
   std::shared_ptr<log> logger;
-  std::shared_ptr<std::vector<std::pair<std::string, std::string>>>
-      channel_mapping; // TODO: has to be shared???
+  std::string guild_id = "";
+  std::chrono::time_point<std::chrono::system_clock> start_time;
 };
 }
 #endif /* discord_core_hpp */

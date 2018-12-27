@@ -61,7 +61,8 @@ void http::setDisplayName(const std::string &display_name,
   url = "guilds/";
   url.append(guild_id);
   url.append("/members/@me/nick");
-  content = ((json){{"username", display_name}}).dump();
+  json json_content = {{"username", display_name}};
+  content = json_content.dump();
 
   auto handle = std::async(std::launch::async, &http::request, this, header,
                            type, url, content);

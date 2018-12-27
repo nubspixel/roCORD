@@ -3,11 +3,11 @@ cmake_minimum_required (VERSION 3.6)
 
 set (CMAKE_CXX_STANDARD 11)  # enable C++11 standard
 
-set (CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++1y -Wall")
+#set (CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++1y -Wall")
  
 if (DEFINED TRAVIS OR DEFINED STAND_ALONE)
 	project (roCORD)
-  set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} 
+    set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} 
                         "${CMAKE_SOURCE_DIR}/third_party/CMake/Modules/")
 	set (CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -D TESTING")
 	set (roCORD_src
@@ -93,6 +93,7 @@ include_directories (${Boost_INCLUDE_DIR} ${ICU_INCLUDE_DIR}
 
 if (DEFINED TRAVIS OR DEFINED STAND_ALONE)
 	add_executable (roCORD ${roCORD_src})
+	target_compile_options (roCORD PRIVATE -std=c++1y -Wall -pedantic-errors -Wuninitialized -Werror) #-Wextra
 else ()
 	add_library (roCORD ${roCORD_src})
 endif ()
