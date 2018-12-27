@@ -47,10 +47,10 @@ void filter::chmod_word(word_sensibility mode)
 
 int filter::check_name(member &memb)
 {
-  if (false /* TODO: condition needed */) { //check if name is in list
+  if (true /* TODO: condition needed */) { //check if name is in list
     switch(user_mode) {
       case username_sensibility::BAN:
-        // call ban in core
+  //     	icore.ban_member(memb, "Reason: bad username", 7); 	 
         break;
       case username_sensibility::FORCE_NICK:
         // call change nick in core & change name var

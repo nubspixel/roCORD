@@ -157,7 +157,6 @@ int discord_init()
     std::cerr << e.what() << std::endl;
     return -1;
   }
-  std::shared_ptr<rocord::log> logger(new rocord::log());
   std::unique_ptr<rocord::websocket> dwss(new rocord::websocket(
       token, "wss://gateway.discord.gg/?v=6&encoding=json", logger)); // TODO use
                                                               // factory pattern
