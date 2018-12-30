@@ -44,12 +44,12 @@ void log::handle_print()
     m.unlock();
     return;
   }
-
-  auto entry = print_queue.front();
-  print_queue.pop();
+  while(!print_queue.empty()) {
+  	auto entry = print_queue.front();
+  	print_queue.pop();
+  	do_print(*entry);
+  }
   m.unlock();
-
-  do_print(*entry);
 }
 
 void log::welcome()

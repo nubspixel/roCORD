@@ -70,6 +70,20 @@ void discord_announce_drop(const char *msg)
 }
 
 /*
+ * Restarts a specific part of the bot.
+ */
+int discord_restart(const std::string &type)
+{
+	if (type == "soft") {
+		dcore->restart_websocket();		
+	} else {
+		logger->print("Restart has failed!", rocord::log_type::warning);
+		return -1;
+	}
+	return 0;
+}
+
+/*
  * Inits the core functionality of the bot. With the given config.
  * A config file looks like following:
  *{

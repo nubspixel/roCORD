@@ -28,6 +28,7 @@ private:
   CURL *curl;
   std::string token; // TODO should be const
   std::shared_ptr<log> logger;
+  //size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata);
   void request(struct curl_slist *header,
                const std::string &request_type /* TODO ENUM */,
                const std::string &url, const std::string &content);

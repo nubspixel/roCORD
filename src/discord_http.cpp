@@ -68,10 +68,11 @@ void http::setDisplayName(const std::string &display_name,
                            type, url, content);
 }
 
-/*size_t http::write_callback(char *ptr, size_t size, size_t nmemb, void *userdata)
+size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata)
 {
-
-}*/
+ //TODO Log http response
+ return nmemb;
+}
 
 void http::request(struct curl_slist *header, const std::string &request_type,
                    const std::string &url, const std::string &content)
@@ -107,7 +108,7 @@ void http::request(struct curl_slist *header, const std::string &request_type,
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
 #endif
     
-//    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, http::write_callback); 
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback); 
     // Perform the request, res will get the return code
     res = curl_easy_perform(curl); // TODO handle curl_easy_perfrom with:
     // https://curl.haxx.se/libcurl/c/CURLOPT_WRITEFUNCTION.html

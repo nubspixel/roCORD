@@ -105,7 +105,12 @@ namespace rocord {
 	{
 		return this->state;
 	}
-
+	
+	void core::restart_websocket()
+	{
+		this->state = OFF;
+		handle_close();
+	}
 	/*
 	 * Public
 	 * A public method to change the display name via discord_bot adapter.

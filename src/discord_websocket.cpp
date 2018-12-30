@@ -184,7 +184,7 @@ void websocket::on_message(
     case 0:
       t = payload.at("t");
       if (t == "READY") {
-        std::cout << payload.at("d").dump() << std::endl;
+        //std::cout << payload.at("d").dump() << std::endl;
         std::string guild = payload.at("d").at("guilds")[0].at("id");
         event_ptr =
             std::bind(&core::handle_ready, std::placeholders::_1, guild);
@@ -196,33 +196,39 @@ void websocket::on_message(
       }
       else if (t == "MESSAGE_CREATE") {
         d = payload.at("d");
-        std::string content = d.at("content");
-        std::string channel_id = d.at("channel_id");
-        if (d.at("content") == "!info") {
-          event_ptr = std::bind(&core::handle_cmd_info, std::placeholders::_1,
-                                channel_id);
-        }
-        else if (d.at("content") == "!uptime") {
-          event_ptr = std::bind(&core::handle_cmd_uptime, std::placeholders::_1,
-                                channel_id);
-        }
-        else {
-          std::cout << d.dump() << std::endl;
-          json user_tmp = d.at("member").at("user");
-          std::unique_ptr<user> usr(new user(user_tmp.at("id"),
-                user_tmp.at("username"), user_tmp.at("discriminator"),
-                user_tmp.at("avatar"), user_tmp.at("bot")));
-          //std::string author = d.at("author").at("username");
-          std::string nick;
-          if ((d.at("member").find("nick") != d.at("member").end()) &&
-              !d.at("member").at("nick").is_null())
-            nick = d.at("member").at("nick");
-          std::vector<uint64_t> roles; //TODO: fill
-          std::shared_ptr<member> membr(new member(std::move(usr), nick, roles));
-          event_ptr =
-              std::bind(&core::handle_message_create, std::placeholders::_1,
-                        membr, content, channel_id);
-        }
+		if (d.value("webhook_id", -1) == -1) {
+          std::string content = d.at("content");
+          std::string channel_id = d.at("channel_id");
+          if (d.at("content") == "!info") {
+            event_ptr = std::bind(&core::handle_cmd_info, std::placeholders::_1,
+                                  channel_id);
+          }
+          else if (d.at("content") == "!uptime") {
+            event_ptr = std::bind(&core::handle_cmd_uptime, std::placeholders::_1,
+                                  channel_id);
+          }
+          else {
+            json user_tmp = d.at("author");
+			std::string avatar = "";
+			bool bot = false;
+			if (user_tmp.find("bot") != user_tmp.end())
+				bot = user_tmp.at("bot");
+			if (!user_tmp.at("avatar").is_null())
+				avatar = user_tmp.at("avatar");	
+            std::unique_ptr<user> usr(new user(1, //user_tmp.at("id"),
+                  user_tmp.at("username"), user_tmp.at("discriminator"),
+                  avatar, bot));
+            std::string nick;
+            if (d.at("member").find("nick") != d.at("member").end() 
+				&& !d.at("member").at("nick").is_null())
+              nick = d.at("member").at("nick");
+            std::vector<uint64_t> roles; //TODO: fill
+            std::shared_ptr<member> membr(new member(std::move(usr), nick, roles));
+            event_ptr =
+                std::bind(&core::handle_message_create, std::placeholders::_1,
+                          membr, content, channel_id);
+          }
+		}
       }
       else
         std::cout << "Unhandled t value: " << t << std::endl;
@@ -241,7 +247,10 @@ void websocket::on_message(
     }
   }
   catch (nlohmann::json::exception const &e) {
-    std::cout << "Parsing failed because: " << e.what() << std::endl;
+	std::stringstream ss;
+	ss << "Parsing failed because: ";
+	ss << e.what();
+	logger->print(ss.str(), log_type::warning);
   }
 
   std::lock_guard<std::mutex> lock(m);

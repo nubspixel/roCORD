@@ -39,6 +39,7 @@ public:
   void set_display_name(const std::string &display_name);
   void handle_events();
   void connect();
+  void restart_websocket();
   State get_state();
   void ban_member(member &memb, const std::string &reason, int delete_message_days);
   void change_nick(member &memb, const std::string &new_nick);
