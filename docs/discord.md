@@ -4,10 +4,10 @@ Please follow the instruction bellow:
 1. Login or Register Account at [discordapp.com](https://discordapp.com/)
 2. Create a new discord server as shown [here](https://www.howtogeek.com/364075/how-to-create-set-up-and-manage-your-discord-server/). Add a new channel as needed.
 3. Open **User Settings** -> **Appearance** -> Enable _Developer Mode_.
-![Developer Portal](https://raw.githubusercontent.com/nubspixel/roCORD/tree/development/docs/images/dev.PNG)
+![Developer Mode](images/dev.PNG)
 
 4. Copy the channel's ID and paste it into your `conf/discord/config.json` channels' general node value.
-![Developer Portal](https://raw.githubusercontent.com/nubspixel/roCORD/tree/development/docs/images/dd0.PNG)
+![Channel_ID](images/dd0.PNG)
 ```json
 {
     "version": 1,
@@ -16,7 +16,7 @@ Please follow the instruction bellow:
     "token": "NDY4NTM2MTUyNjE4Njk2NzA4.DpWT3w.p0CGUK72FSvt0qcKr8XwtsmCdNE",
     "presence": "by Normynator",
     "channels" : {
-        "general": > "399436421378493102"
+        "general": "399436421378493102"
     }
 }
 ```
@@ -66,15 +66,15 @@ Please follow the instruction bellow:
 ```
 
 7. Next, we will need to create the bot. Open the Discord's [Developer Portal](https://discordapp.com/developers/applications/)
-![Developer Portal](https://raw.githubusercontent.com/nubspixel/roCORD/tree/development/docs/images/dd1.PNG)
+![Developer Portal](images/dd1.PNG)
 
 6. Click **Create Application**.
 7. Enter the name of your application and change the application image as needed. Please make sure you save changes before proceeding to the next step.
-![Developer Portal](https://raw.githubusercontent.com/nubspixel/roCORD/tree/development/docs/images/dd2.PNG)
+![Create App](images/dd2.PNG)
 
 8. Click **Bot** -> **Add Bot**. Then, confirm the creation of a new bot.
 9. Enter the name of your bot and change the bot avatar image as needed. Please make sure you save changes before proceeding to the next step.
-![Developer Portal](https://raw.githubusercontent.com/nubspixel/roCORD/tree/development/docs/images/dd3.PNG)
+![Create Bot](images/dd3.PNG)
 
 10. Edit the _display_name_ in your `conf/discord/config.json` to the same value you set the name of your bot.
 11. Under the _Token_ label,  Click **Copy**. Paste this into your `conf/discord/config.json` token node value.
@@ -93,16 +93,16 @@ Please follow the instruction bellow:
 }
 ```
 11. For the next step, you will require to get your Application Client ID. You can obtain from the **General Information** -> **Client ID** -> **Copy**.
-![Developer Portal](https://raw.githubusercontent.com/nubspixel/roCORD/tree/development/docs/images/dd4.PNG)
+![Client_ID](images/dd4.PNG)
 
 
-12. Copy the link below into a notepad. Then change the <Application_Client_ID> with the Application Client ID, which 
+12. Copy the link below into a notepad. Then change the <Application_Client_ID> with the Application Client ID. Copy and paste this url into your browser to _invite_ your newly created bot into your Discord server.
 ```
 https://discordapp.com/oauth2/authorize?client_id=<Application_Client_ID>&scope=bot&permissions=8.
 ```
-![Developer Portal](https://raw.githubusercontent.com/nubspixel/roCORD/tree/development/docs/images/dd5.PNG)
+![Invite Bot](images/dd5.PNG)
 
 13. Select the discord server you want to add the bot to and authorize it's access. You should be able to see the bot in your Server Channel.
-![Developer Portal](https://raw.githubusercontent.com/nubspixel/roCORD/tree/development/docs/images/dd6.PNG)
+![Finally](images/dd6.PNG)
 
 
