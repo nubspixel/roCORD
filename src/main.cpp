@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
 		std::string channel = "general";
 		std::string msg = "Test message!"; 
 
-    		while(i < 100) {
+    		while(i < 10) {
         		discord_handle();
         		std::cout << "This simulates rAthena SRC! Round: " << ++i << std::endl;
         		std::this_thread::sleep_for(std::chrono::milliseconds(1000));

@@ -26,7 +26,8 @@ if (DEFINED TRAVIS OR DEFINED STAND_ALONE)
         src/showmsg_testing.cpp 
         test/core_test.cpp 
         test/bot_test.cpp
-        test/filter_test.cpp)
+        test/filter_test.cpp
+		test/integration/core_integration.cpp)
 
   if (NOT DEFINED TESTING) 
 	# Download and unpack googletest at configure time
