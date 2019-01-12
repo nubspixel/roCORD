@@ -43,29 +43,27 @@ void http::send(const std::string &payload, const std::string &channel_id)
   content = "content=";
   content.append(payload);
 
-  auto handle = std::async(std::launch::async, &http::request, this, header,
-                           type, url, content);
+  std::thread(&http::request, this, header, type, url, content).detach();
 }
 
 void http::setDisplayName(const std::string &display_name,
-                          const std::string &guild_id)
+		const std::string &guild_id)
 {
-  struct curl_slist *header = nullptr;
-  std::string url, content;
-  std::string type = "PATCH";
+	struct curl_slist *header = nullptr;
+	std::string url, content;
+	std::string type = "PATCH";
 
-  if (guild_id.empty() || display_name.empty())
-    return;
+	if (guild_id.empty() || display_name.empty())
+		return;
 
-  header = curl_slist_append(header, "Content-Type:application/json");
-  url = "guilds/";
-  url.append(guild_id);
-  url.append("/members/@me/nick");
-  json json_content = {{"username", display_name}};
-  content = json_content.dump();
+	header = curl_slist_append(header, "Content-Type:application/json");
+	url = "guilds/";
+	url.append(guild_id);
+	url.append("/members/@me/nick");
+	json json_content = {{"username", display_name}};
+	content = json_content.dump();
 
-  auto handle = std::async(std::launch::async, &http::request, this, header,
-                           type, url, content);
+	std::thread(&http::request, this, header, type, url, content).detach();
 }
 
 size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata)
