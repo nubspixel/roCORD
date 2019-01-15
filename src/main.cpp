@@ -28,18 +28,18 @@ int main(int argc, char **argv) {
 			std::string channel = "general";
 			std::string msg = "Test message!"; 
 
-    			while(true) {
+   			while(true) {
 				++i;
-        			discord_handle();
+       			discord_handle();
 				if (argc < 3) {
-        				std::cout << "This simulates rAthena SRC! Round: " << i << std::endl;
+       				std::cout << "This simulates rAthena SRC! Round: " << i << std::endl;
 				}
-        			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        			if(i == 3 || i % 1200 == 0) {
+				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+       			if(i == 3 || i % 1200 == 0) {
 					discord_send(msg.c_str(), channel.c_str(), name.c_str());
 				}
-    			}
-    			return 0;
+   			}
+   			return 0;
 		} else {
 			std::cout << "No argument runs the bot in test mode for 10 iterations.\n With -test all unit test will be executed!" << std::endl;
 			return -1;
@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
 		std::string channel = "general";
 		std::string msg = "Test message!"; 
 
-    		while(i < 100) {
+    		while(i < 10) {
         		discord_handle();
         		std::cout << "This simulates rAthena SRC! Round: " << ++i << std::endl;
         		std::this_thread::sleep_for(std::chrono::milliseconds(1000));

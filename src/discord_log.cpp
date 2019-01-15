@@ -22,7 +22,7 @@ void log::print(std::string message, log_type ltype, bool need_sync)
   // need types, src and so on
 
   // HARDCODED logging level
-  int level = 0x18;
+  int level = 0xFF;
 
   if (level & ltype) {
     std::shared_ptr<log_entry> entry(new log_entry(message, ltype));
@@ -54,29 +54,30 @@ void log::handle_print()
 
 void log::welcome()
 {
-  ShowStatus("Loading roCORD by norm\n");
+  ShowStatus("%s", "Loading roCORD by norm\n");
 }
 
 void log::do_print(log_entry& entry)
 {
+  const char* format = "%s\n";
   switch(entry.get_type()) {
     case log_type::warning:
-      ShowWarning(entry.get_message().c_str());
+      ShowWarning(format, entry.get_message().c_str());
       break;
     case log_type::info:
-      ShowInfo(entry.get_message().c_str());
+      ShowInfo(format, entry.get_message().c_str());
       break;
     case log_type::status:
-      ShowStatus(entry.get_message().c_str());
+      ShowStatus(format, entry.get_message().c_str());
       break;
     case log_type::error:
-      ShowError(entry.get_message().c_str());
+      ShowError(format, entry.get_message().c_str());
       break;
     case log_type::debug:
-      ShowDebug(entry.get_message().c_str());
+      ShowDebug(format, entry.get_message().c_str());
       break;
     default:
-      ShowError("[roCORD]: error in handle print");
+      ShowError(format, "[roCORD]: error in handle print");
   }
 }
 } // namespace rocord
